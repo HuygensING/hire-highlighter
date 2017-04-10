@@ -1,0 +1,21 @@
+{
+  "name": "hire-highlighter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^15.0.21",
+    "hi-bump": "^1.1.1",
+    "typescript": "^2.2.2"
+  },
+  "dependencies": {
+    "react": "^15.5.3"
+  }
+}
