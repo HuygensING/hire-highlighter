@@ -3,70 +3,71 @@ import matchAllIterator from './match-all-iterator';
 import matchQueryIterator from './match-query-iterator';
 
 // ToDo add props and state interfaces
-class HireHighlightBetween extends React.Component<any, any> {
+class HireHighlighter extends React.Component<any, any> {
 	private node;
 
-	public state = {
-		highlightElements: [],
-	};
-
 	public componentDidMount() {
-		let { commonNode } = this.props;
 		const {
-			endNode,
+			endNodeSelector,
 			hlClassName,
 			hlElementName,
+			onChange,
 			query,
-			startNode,
+			startNodeSelector,
 		} = this.props;
-
-		if (query == null) return;
+		console.log('Q', query);
 
 		const highlightElements = [];
 		const className = (hlClassName == null) ? 'hi' : hlClassName;
 		const elementName = (hlElementName == null) ? 'span' : hlElementName;
 
-		if (startNode == null && endNode == null && commonNode == null) {
-			commonNode = this.node;
-		}
+		const startNode = (startNodeSelector != null) ?
+			this.node.querySelector(startNodeSelector) :
+			null;
 
-		const iterator = (query === '*') ?
-			matchAllIterator(startNode, endNode, commonNode) :
-			matchQueryIterator(commonNode, query);
+		const endNode = (endNodeSelector != null) ?
+			this.node.querySelector(endNodeSelector) :
+			null;
+
+		const iterator = (query == null || query === '*') ?
+			matchAllIterator(startNode, endNode, this.node) :
+			matchQueryIterator(query, this.node);
+
+		const highlightAll = query === undefined;
 
 		let currentNode;
 		while (currentNode = iterator.nextNode()) {
 			const textRange = document.createRange();
 
-			if (query === '*') {
-				// console.log(currentNode.textContent);
+			if (highlightAll) {
 				textRange.selectNode(currentNode);
-			} else {
+			} else if (query != null) {
 				const start = currentNode.textContent.toLowerCase().indexOf(query);
+				const end = start + query.length;
 				textRange.setStart(currentNode, start);
-				textRange.setEnd(currentNode, start + (query.length - 1));
+				textRange.setEnd(currentNode, end);
 			}
 
 			if (!textRange.collapsed) {
 				const el = document.createElement(elementName);
 				el.className = className;
 				textRange.surroundContents(el);
+				if (!highlightAll) iterator.nextNode();
 				highlightElements.push(el);
 			}
 		}
 
-		this.setState({ highlightElements });
-	}
-
-	// ToDo remove highlight nodes on unmount? Or unnecessary? Maybe just a public method to remove them
-	public componentWillUnmount() {
-		console.log(this.state.highlightElements);
+		if (onChange != null) onChange(highlightElements);
 	}
 
 	public render() {
+		const className = (this.props.className != null) ?
+			this.props.className :
+			'hire-highlighter';
+
 		return (
 			<div
-				className={this.props.className}
+				className={className}
 			  ref={(node) => { this.node = node }}
 			>
 				{this.props.children}
@@ -75,7 +76,7 @@ class HireHighlightBetween extends React.Component<any, any> {
 	}
 }
 
-export default HireHighlightBetween;
+export default HireHighlighter;
 
 // let text = '';
 // const highlightSpans = [];

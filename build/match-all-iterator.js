@@ -2,13 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (startNode, endNode, commonNode) => {
     const range = document.createRange();
-    if (startNode != null && endNode != null) {
+    console.log(startNode, endNode, commonNode);
+    if (startNode != null)
         range.setStartAfter(startNode);
+    else
+        range.setStartBefore(commonNode);
+    if (endNode != null)
         range.setEndBefore(endNode);
-    }
-    else {
+    else
+        range.setEndAfter(commonNode);
+    if (startNode == null && endNode == null)
         range.selectNode(commonNode);
-    }
     const filter = (node) => {
         const r = document.createRange();
         r.selectNode(node);

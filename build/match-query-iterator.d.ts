@@ -1,2 +1,2 @@
-declare var _default: (commonNode: any, query: any) => NodeIterator;
+declare var _default: (query: any, commonNode: any) => NodeIterator;
 export default _default;

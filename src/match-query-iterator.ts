@@ -1,4 +1,4 @@
-export default (commonNode, query) => {
+export default (query, commonNode) => {
 	const filter = (node) =>
 		node.textContent.toLowerCase().indexOf(query) > -1 ?
 			NodeFilter.FILTER_ACCEPT :

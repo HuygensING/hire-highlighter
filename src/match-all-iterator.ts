@@ -1,12 +1,13 @@
 export default (startNode, endNode, commonNode) => {
 	const range = document.createRange();
 
-	if (startNode != null && endNode != null) {
-		range.setStartAfter(startNode);
-		range.setEndBefore(endNode);
-	} else {
-		range.selectNode(commonNode);
-	}
+	console.log(startNode, endNode, commonNode);
+	if (startNode != null) range.setStartAfter(startNode);
+	else range.setStartBefore(commonNode);
+	if (endNode != null) range.setEndBefore(endNode);
+	else range.setEndAfter(commonNode);
+
+	if (startNode == null && endNode == null) range.selectNode(commonNode);
 
 	const filter = (node: Node) => {
 		const r = document.createRange();
