@@ -1,9 +1,10 @@
 {
   "name": "hire-highlighter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "build/index.js",
   "scripts": {
+    "bump": "hi-bump",
     "build": "tsc",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook-build": "build-storybook -c .storybook -o docs",
