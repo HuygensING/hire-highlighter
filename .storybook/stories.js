@@ -40,10 +40,10 @@ storiesOf('HireHighlighter - query', module)
 
 storiesOf('HireHighlighter - start & end selectors', module)
 	.add('[startNodeSelector=".start" endNodeSelector=".end"]', () =>
-	<Hi
-		startNodeSelector=".start"
-		endNodeSelector=".end"
-	>
+		<Hi
+			startNodeSelector=".start"
+			endNodeSelector=".end"
+		>
 			<ins>Avast</ins>, yer <a className="start" />not lootting me<a className="end" /> <del>as</del> a treasure!
 		</Hi>
 	)
@@ -71,5 +71,30 @@ storiesOf('HireHighlighter - overlap', module)
 	)
 	.add('[ ] (quadruple)', () =>
 		<div><Hi>Confucius <Hi>says: <Hi><Hi>man</Hi> and om</Hi>.</Hi></Hi></div>
+	);
+
+storiesOf('HireHighlighter - custom node and class name', module)
+	.add('[hlNodeName="div" hlClassName="my-hi"]', () =>
+		<div>Confucius says: <Hi hlNodeName="div" hlClassName="my-hi">man and om</Hi>.</div>
+	)
+
+storiesOf('HireHighlighter - start & end selectors 2', module)
+	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"]', () =>
+		<Hi
+			startNodeSelector=".start"
+			endNodeSelector=".end"
+		>
+			<p>Yo-ho-ho, yer not scraping me <a className="start" data-id="1" />without a beauty!</p>
+			<p>Sharks stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
+		</Hi>
+	)
+	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"] - overlap', () =>
+		<Hi
+			startNodeSelector=".start"
+			endNodeSelector=".end"
+		>
+			<p>Yo-ho-ho, yer not <a className="start" data-id="2" />scraping me <a className="start" data-id="1" />without a beauty!</p>
+			<p>Sharks<a className="end" data-id="2" /> stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
+		</Hi>
 	);
 

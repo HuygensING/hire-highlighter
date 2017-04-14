@@ -5,21 +5,20 @@ const match_all_iterator_1 = require("./match-all-iterator");
 const match_query_iterator_1 = require("./match-query-iterator");
 class HireHighlighter extends React.Component {
     componentDidMount() {
-        const { endNodeSelector, hlClassName, hlElementName, onChange, query, startNodeSelector, } = this.props;
-        console.log('Q', query);
+        const { idAttribute, endNodeSelector, hlClassName, hlNodeName, onChange, query, startNodeSelector, } = this.props;
         const highlightElements = [];
         const className = (hlClassName == null) ? 'hi' : hlClassName;
-        const elementName = (hlElementName == null) ? 'span' : hlElementName;
+        const elementName = (hlNodeName == null) ? 'span' : hlNodeName;
         const startNode = (startNodeSelector != null) ?
             this.node.querySelector(startNodeSelector) :
             null;
         const endNode = (endNodeSelector != null) ?
             this.node.querySelector(endNodeSelector) :
             null;
-        const iterator = (query == null || query === '*') ?
+        const highlightAll = query === undefined;
+        const iterator = highlightAll ?
             match_all_iterator_1.default(startNode, endNode, this.node) :
             match_query_iterator_1.default(query, this.node);
-        const highlightAll = query === undefined;
         let currentNode;
         while (currentNode = iterator.nextNode()) {
             const textRange = document.createRange();

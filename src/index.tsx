@@ -8,18 +8,18 @@ class HireHighlighter extends React.Component<any, any> {
 
 	public componentDidMount() {
 		const {
+			idAttribute,
 			endNodeSelector,
 			hlClassName,
-			hlElementName,
+			hlNodeName,
 			onChange,
 			query,
 			startNodeSelector,
 		} = this.props;
-		console.log('Q', query);
 
 		const highlightElements = [];
 		const className = (hlClassName == null) ? 'hi' : hlClassName;
-		const elementName = (hlElementName == null) ? 'span' : hlElementName;
+		const elementName = (hlNodeName == null) ? 'span' : hlNodeName;
 
 		const startNode = (startNodeSelector != null) ?
 			this.node.querySelector(startNodeSelector) :
@@ -29,11 +29,12 @@ class HireHighlighter extends React.Component<any, any> {
 			this.node.querySelector(endNodeSelector) :
 			null;
 
-		const iterator = (query == null || query === '*') ?
+		const highlightAll = query === undefined;
+
+		const iterator = highlightAll ?
 			matchAllIterator(startNode, endNode, this.node) :
 			matchQueryIterator(query, this.node);
 
-		const highlightAll = query === undefined;
 
 		let currentNode;
 		while (currentNode = iterator.nextNode()) {
@@ -77,18 +78,3 @@ class HireHighlighter extends React.Component<any, any> {
 }
 
 export default HireHighlighter;
-
-// let text = '';
-// const highlightSpans = [];
-// const treeWalkerContainer = new TreeWalkerContainer(startAnchor, endAnchor, commonAncestor);
-// const treeWalker = treeWalkerContainer.treeWalker;
-// while (treeWalker.nextNode()) {
-// 	const node = treeWalker.currentNode;
-// 	const textRange = document.createRange();
-// 	textRange.selectNode(node);
-// 	const span = document.createElement('span');
-// 	span.className = 'highlight';
-// 	textRange.surroundContents(span);
-// 	text = `${text}${node.textContent}`;
-// 	highlightSpans.push(span);
-// }
