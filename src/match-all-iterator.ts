@@ -1,11 +1,19 @@
-export default (startNode, endNode, commonNode) => {
+export default (startNode: Node, endNode: Node, commonNode?: Node) => {
 	const range = document.createRange();
 
-	console.log(startNode, endNode, commonNode);
-	if (startNode != null) range.setStartAfter(startNode);
-	else range.setStartBefore(commonNode);
-	if (endNode != null) range.setEndBefore(endNode);
-	else range.setEndAfter(commonNode);
+	if (commonNode == null) commonNode = range.commonAncestorContainer;
+
+	if (startNode != null) {
+		range.setStartAfter(startNode);
+	} else {
+		range.setStartBefore(commonNode);
+	}
+
+	if (endNode != null) {
+		range.setEndBefore(endNode);
+	} else {
+		range.setEndAfter(commonNode);
+	}
 
 	if (startNode == null && endNode == null) range.selectNode(commonNode);
 
@@ -22,10 +30,6 @@ export default (startNode, endNode, commonNode) => {
 	};
 
 	filter['acceptNode'] = filter;
-
-	commonNode = (commonNode != null) ?
-		commonNode :
-		range.commonAncestorContainer;
 
 	return document.createTreeWalker(commonNode, NodeFilter.SHOW_TEXT, <any> filter, false);
 }

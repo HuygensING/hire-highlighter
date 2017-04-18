@@ -1,2 +1,2 @@
-declare var _default: (startNode: any, endNode: any, commonNode: any) => TreeWalker;
+declare var _default: (startNode: Node, endNode: Node, commonNode?: Node) => TreeWalker;
 export default _default;

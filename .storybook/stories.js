@@ -28,37 +28,44 @@ storiesOf('HireHighlighter - query', module)
 	.add('[query="x-ray"]', () =>
 		<Hi query="x-ray">Mystery, x-ray vision, and mind.</Hi>
 	)
-	.add('FAIL: [query="x-ray"] (with markup)', () =>
-		<Hi query="x-ray">Mystery, x-<ins>ray</ins> vision, and mind.</Hi>
-	)
 	.add('[query="squeezing rich meatballs"]', () =>
 		<Hi query="squeezing rich meatballs">When squeezing rich meatballs, be sure they are room temperature.</Hi>
+	);
+
+storiesOf('HireHighlighter - query with milestones', module)
+	.add('[query="x-ray" milestones]', () =>
+		<Hi query="x-ray" milestones>
+			Mystery, x-<ins>ray</ins> vision, and mind.<br />
+			Tragedy, ionic cannon, and assimilation. X-<br />
+			ray wind is a chemical x-ray sensor.
+		</Hi>
 	)
-	.add('FAIL: [query="squeezing rich meatballs"] (with markup)', () =>
-		<Hi query="squeezing rich meatballs">When squeezing <del>rich</del> meatballs, be sure they are room temperature.</Hi>
+	.add('[query="squeezing rich meatballs" milestones]', () =>
+		<Hi query="squeezing rich meatballs" milestones>When squeezing <del>rich</del> meatballs, be sure they are room temperature.</Hi>
+	)
+	.add('[query="aha"] milestones', () =>
+		<Hi query="aha" milestones>Aha, haahaahaa, hahahaha!</Hi>
 	);
 
 storiesOf('HireHighlighter - start & end selectors', module)
-	.add('[startNodeSelector=".start" endNodeSelector=".end"]', () =>
-		<Hi
-			startNodeSelector=".start"
-			endNodeSelector=".end"
-		>
-			<ins>Avast</ins>, yer <a className="start" />not lootting me<a className="end" /> <del>as</del> a treasure!
-		</Hi>
-	)
-	.add('[startNodeSelector=".start"]', () =>
-		<Hi
-			startNodeSelector=".start"
-		>
-			<ins>Avast</ins>, yer not lootting <a className="start" />me <del>as</del> a treasure!
-		</Hi>
-	)
-	.add('[endNodeSelector=".end"]', () =>
+	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"]', () =>
 		<Hi
 			endNodeSelector=".end"
+			idAttribute="data-id"
+			startNodeSelector=".start"
 		>
-			<ins>Avast</ins>, yer not lootting<a className="end" /> me <del>as</del> a treasure!
+			<p>Yo-ho-ho, yer not scraping me <a className="start" data-id="1" />without a beauty!</p>
+			<p>Sharks stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
+		</Hi>
+	)
+	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"] - overlap', () =>
+		<Hi
+			endNodeSelector=".end"
+			idAttribute="data-id"
+			startNodeSelector=".start"
+		>
+			<p>Yo-ho-ho, yer not <a className="start" data-id="2" />scraping me <a className="start" data-id="1" />without a beauty!</p>
+			<p>Sharks<a className="end" data-id="2" /> stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
 		</Hi>
 	);
 
@@ -76,25 +83,4 @@ storiesOf('HireHighlighter - overlap', module)
 storiesOf('HireHighlighter - custom node and class name', module)
 	.add('[hlNodeName="div" hlClassName="my-hi"]', () =>
 		<div>Confucius says: <Hi hlNodeName="div" hlClassName="my-hi">man and om</Hi>.</div>
-	)
-
-storiesOf('HireHighlighter - start & end selectors 2', module)
-	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"]', () =>
-		<Hi
-			startNodeSelector=".start"
-			endNodeSelector=".end"
-		>
-			<p>Yo-ho-ho, yer not scraping me <a className="start" data-id="1" />without a beauty!</p>
-			<p>Sharks stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
-		</Hi>
-	)
-	.add('[startNodeSelector=".start" endNodeSelector=".end" idAttribute="data-id"] - overlap', () =>
-		<Hi
-			startNodeSelector=".start"
-			endNodeSelector=".end"
-		>
-			<p>Yo-ho-ho, yer not <a className="start" data-id="2" />scraping me <a className="start" data-id="1" />without a beauty!</p>
-			<p>Sharks<a className="end" data-id="2" /> stutter<a className="end" data-id="1" /> from amnesties like coal-black bilge rats.</p>
-		</Hi>
 	);
-

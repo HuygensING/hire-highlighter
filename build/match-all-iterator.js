@@ -2,15 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (startNode, endNode, commonNode) => {
     const range = document.createRange();
-    console.log(startNode, endNode, commonNode);
-    if (startNode != null)
+    if (commonNode == null)
+        commonNode = range.commonAncestorContainer;
+    if (startNode != null) {
         range.setStartAfter(startNode);
-    else
+    }
+    else {
         range.setStartBefore(commonNode);
-    if (endNode != null)
+    }
+    if (endNode != null) {
         range.setEndBefore(endNode);
-    else
+    }
+    else {
         range.setEndAfter(commonNode);
+    }
     if (startNode == null && endNode == null)
         range.selectNode(commonNode);
     const filter = (node) => {
@@ -23,8 +28,5 @@ exports.default = (startNode, endNode, commonNode) => {
             NodeFilter.FILTER_ACCEPT;
     };
     filter['acceptNode'] = filter;
-    commonNode = (commonNode != null) ?
-        commonNode :
-        range.commonAncestorContainer;
     return document.createTreeWalker(commonNode, NodeFilter.SHOW_TEXT, filter, false);
 };
