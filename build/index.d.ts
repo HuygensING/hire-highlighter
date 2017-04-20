@@ -11,7 +11,7 @@ declare class HireHighlighter extends React.Component<any, null> {
     private highlightBetweenSelectors(startNodeSelector, endNodeSelector);
     private wrapTextNodes(iterator);
     private wrapQuery(iterator, query);
-    private addMilestones(iterator, indices, start?);
+    private addMilestones(iterator, startIndices, endIndices);
     private createHighlightElement();
     private createMilestone(id, start?);
     render(): JSX.Element;

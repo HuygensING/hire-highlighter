@@ -42,11 +42,10 @@ class HireHighlighter extends React.Component<any, null> {
 	}
 
 	public componentDidMount() {
+		let { milestones, query } = this.props;
 		const {
 			endNodeSelector,
 			onChange,
-			query,
-			milestones,
 			startNodeSelector,
 		} = this.props;
 
@@ -55,30 +54,32 @@ class HireHighlighter extends React.Component<any, null> {
 		const highlightAll = query === undefined;
 		const highlightBetween = startNodeSelector !== null && endNodeSelector != null;
 
-		if (milestones) {
-			const t0 = performance.now();
+		if (query != null) {
+			query = query.toLowerCase();
+			if (query.length === 1) milestones = false;
+		}
 
-			const iterator = matchAllIterator(undefined, undefined, this.node);
+		const t0 = performance.now();
+		if (milestones) {
+			const iterator = matchAllIterator(this.node);
 			const text = concatTextContent(iterator);
 			const startNodeIndices = findStartNodeIndices(text, query);
-			const iterator2 = matchAllIterator(undefined, undefined, this.node);
-			this.addMilestones(iterator2, startNodeIndices, true);
-			const iterator3 = matchAllIterator(undefined, undefined, this.node);
 			const endNodeIndices = startNodeIndices.map((i) => i + query.length);
-			this.addMilestones(iterator3, endNodeIndices);
+			const iterator2 = matchAllIterator(this.node);
+			this.addMilestones(iterator2, startNodeIndices, endNodeIndices);
 			this.highlightBetweenSelectors(`.hi-start`, `.hi-end`);
-
-			const t1 = performance.now();
-			console.log(`Perf: ${t1 - t0}`);
 		} else if (highlightAll && highlightBetween) {
 			this.highlightBetweenSelectors(startNodeSelector, endNodeSelector);
 		} else if (highlightAll) {
-			const iterator = matchAllIterator(undefined, undefined, this.node);
+			const iterator = matchAllIterator(this.node);
 			this.wrapTextNodes(iterator);
 		} else {
 			const iterator = matchQueryIterator(query, this.node);
 			this.wrapQuery(iterator, query);
 		}
+
+		const t1 = performance.now();
+		console.log(`Perf: ${t1 - t0}`);
 
 		if (onChange != null) onChange(highlightElements);
 	}
@@ -95,6 +96,7 @@ class HireHighlighter extends React.Component<any, null> {
 
 	private wrapTextNodes(iterator) {
 		let currentNode;
+
 		while (currentNode = iterator.nextNode()) {
 			const textRange = document.createRange();
 			textRange.selectNode(currentNode);
@@ -125,23 +127,35 @@ class HireHighlighter extends React.Component<any, null> {
 		}
 	}
 
-	private addMilestones(iterator: TreeWalker, indices: number[], start:boolean = false) {
+	private addMilestones(iterator: TreeWalker, startIndices: number[], endIndices: number[]) {
 		let textLength = 0;
 		let currentNode;
-		let currentIndex = 0;
+		let startIndexIndex = 0;
+		let endIndexIndex = 0;
+		let startIndex = startIndices[startIndexIndex];
+		let endIndex = endIndices[endIndexIndex];
 
 		while (currentNode = iterator.nextNode()) {
-			const milestoneIndex = indices[currentIndex];
-
 			if (
-				milestoneIndex >= textLength &&
-				milestoneIndex <= textLength + currentNode.textContent.length
+				startIndex >= textLength &&
+				startIndex <= textLength + currentNode.textContent.length
 			) {
 				const textRange = document.createRange();
-				textRange.setStart(currentNode, milestoneIndex - textLength);
-				const node = this.createMilestone(`ms-${currentIndex}`, start);
+				textRange.setStart(currentNode, startIndex - textLength);
+				const node = this.createMilestone(`ms-${startIndexIndex}`, true);
 				textRange.insertNode(node);
-				currentIndex += 1;
+				startIndex = startIndices[++startIndexIndex];
+			}
+
+			if (
+				endIndex >= textLength &&
+				endIndex <= textLength + currentNode.textContent.length
+			) {
+				const textRange = document.createRange();
+				textRange.setStart(currentNode, endIndex - textLength);
+				const node = this.createMilestone(`ms-${endIndexIndex}`);
+				textRange.insertNode(node);
+				endIndex = endIndices[++endIndexIndex];
 			}
 
 			textLength += currentNode.textContent.length;

@@ -1,23 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = (startNode, endNode, commonNode) => {
+exports.default = (startNode, endNode) => {
     const range = document.createRange();
-    if (commonNode == null)
-        commonNode = range.commonAncestorContainer;
-    if (startNode != null) {
-        range.setStartAfter(startNode);
+    if (endNode == null) {
+        range.selectNode(startNode);
     }
     else {
-        range.setStartBefore(commonNode);
-    }
-    if (endNode != null) {
+        range.setStartAfter(startNode);
         range.setEndBefore(endNode);
     }
-    else {
-        range.setEndAfter(commonNode);
-    }
-    if (startNode == null && endNode == null)
-        range.selectNode(commonNode);
     const filter = (node) => {
         const r = document.createRange();
         r.selectNode(node);
@@ -28,5 +19,5 @@ exports.default = (startNode, endNode, commonNode) => {
             NodeFilter.FILTER_ACCEPT;
     };
     filter['acceptNode'] = filter;
-    return document.createTreeWalker(commonNode, NodeFilter.SHOW_TEXT, filter, false);
+    return document.createTreeWalker(range.commonAncestorContainer, NodeFilter.SHOW_TEXT, filter, false);
 };
